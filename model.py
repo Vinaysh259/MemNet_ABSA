@@ -172,7 +172,7 @@ class MemN2N(object):
         
        
         if idx%500 == 0:
-            print "loss - ", loss
+            print ("loss - ", loss)
 
         cost += np.sum(loss)
       
@@ -242,4 +242,3 @@ class MemN2N(object):
         test_loss, test_acc = self.test(test_data)
         print('train-loss=%.2f;train-acc=%.2f;test-acc=%.2f;' % (train_loss, train_acc, test_acc))
         self.log_loss.append([train_loss, test_loss])
-        

@@ -6,7 +6,7 @@ import numpy as np
 import os
 import xml.etree.ElementTree as ET
 import html
-import HTMLParser
+import html.parser
 import re
 
 stop = set(stopwords.words('english')) 
@@ -18,9 +18,9 @@ def load_embedding_file(embed_file_name, word_set):
   with open(embed_file_name, 'r') as embed_file:
     for line in embed_file:
       content = line.strip().split()
-      word = content[0]
+      word = ''.join(content[:-300])
       if word in word_set:
-        embedding = np.array(content[1:], dtype=float)
+        embedding = np.asarray(content[-300:] , dtype='float32')
         embeddings[word] = embedding
 
   return embeddings
@@ -85,7 +85,7 @@ def get_embedding_matrix(embeddings, sent_word2idx,  target_word2idx, edim):
         target_embed_matrix[target_word2idx[target]] += embeddings[word]
     target_embed_matrix[target_word2idx[target]] /= max(1, len(target.split()))
 
-  print type(word_embed_matrix)
+  print (type(word_embed_matrix))
   return word_embed_matrix, target_embed_matrix
 
 
@@ -109,7 +109,7 @@ def get_dataset(data_file_name, sent_word2idx, target_word2idx, embeddings):
       try:
         target_location = sent_words.index("$t$")
       except:
-        print "sentence does not contain target element tag"
+        print ("sentence does not contain target element tag")
         exit()
 
       is_included_flag = 1
@@ -122,7 +122,7 @@ def get_dataset(data_file_name, sent_word2idx, target_word2idx, embeddings):
         try:
           word_index = sent_word2idx[word]
         except:
-          print "id not found for word in the sentence"
+          print ("id not found for word in the sentence")
           exit()
 
         location_info = abs(index - target_location)
@@ -145,13 +145,13 @@ def get_dataset(data_file_name, sent_word2idx, target_word2idx, embeddings):
       try:
         target_index = target_word2idx[target]
       except:
-        print target
-        print "id not found for target"
+        print (target)
+        print ("id not found for target")
         exit()
 
 
       if not is_included_flag:
-        print sentence
+        print(sentence)
         continue
 
       sentence_list.append(id_tokenised_sentence)
